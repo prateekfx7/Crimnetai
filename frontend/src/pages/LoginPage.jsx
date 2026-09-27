@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { login as apiLogin } from '../api';
 import { Shield, Eye, EyeOff, Sparkles, UserCheck, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage({ onLogin }) {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +24,7 @@ export default function LoginPage({ onLogin }) {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.user));
         onLogin(res.data.user);
+        navigate('/dashboard');
         return;
       }
     } catch (err) {
@@ -39,6 +42,7 @@ export default function LoginPage({ onLogin }) {
         localStorage.setItem('token', 'mock-jwt-token-demo-mode');
         localStorage.setItem('user', JSON.stringify(demoUser));
         onLogin(demoUser);
+        navigate('/dashboard');
         return;
       }
       setError(err.response?.data?.error || 'Login failed. Please click 1-Click Demo above.');
@@ -72,6 +76,7 @@ export default function LoginPage({ onLogin }) {
     localStorage.setItem('token', 'mock-jwt-token-demo-mode');
     localStorage.setItem('user', JSON.stringify(demoUser));
     onLogin(demoUser);
+    navigate('/dashboard');
 
     // Sync live token in background if backend is connected
     apiLogin(u, p).then((res) => {

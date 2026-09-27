@@ -4,6 +4,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
+    "build": "node -e \"console.log('Backend ready')\"",
     "start": "node src/server.js",
     "dev": "node src/server.js",
     "seed": "node src/seed.js"

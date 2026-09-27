@@ -5,15 +5,18 @@ import {
   ChevronDown, LogOut, Search, FileText
 } from 'lucide-react';
 import { getCases } from '../api';
+import { MOCK_CASE } from '../mockData';
 
 export default function Layout({ children, user, onLogout, currentCaseId, onCaseChange }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [cases, setCases] = useState([]);
+  const [cases, setCases] = useState([MOCK_CASE]);
 
   useEffect(() => {
     getCases()
-      .then(res => setCases(res.data))
+      .then(res => {
+        if (res?.data?.length) setCases(res.data);
+      })
       .catch(() => {});
   }, []);
 
