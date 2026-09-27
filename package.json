@@ -4,6 +4,7 @@
   "description": "AI-Powered Criminal Network Analysis System",
   "private": true,
   "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build",
     "install:all": "cd backend && npm install && cd ../frontend && npm install",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
