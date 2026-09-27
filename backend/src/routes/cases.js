@@ -242,13 +242,19 @@ router.get('/:id/stats', authenticate, async (req, res) => {
       DataSource.countDocuments({ caseId }),
     ]);
 
+    const mongoose = (await import('mongoose')).default;
+    const isObjectId = mongoose.Types.ObjectId.isValid(caseId);
+    const caseMatch = isObjectId
+      ? { $or: [{ caseId: mongoose.Types.ObjectId.createFromHexString(caseId) }, { caseId }] }
+      : { caseId };
+
     const entityTypes = await Entity.aggregate([
-      { $match: { caseId: (await import('mongoose')).default.Types.ObjectId.createFromHexString(caseId) } },
+      { $match: caseMatch },
       { $group: { _id: '$type', count: { $sum: 1 } } },
     ]);
 
     const patternTypes = await Pattern.aggregate([
-      { $match: { caseId: (await import('mongoose')).default.Types.ObjectId.createFromHexString(caseId) } },
+      { $match: caseMatch },
       { $group: { _id: '$severity', count: { $sum: 1 } } },
     ]);
 

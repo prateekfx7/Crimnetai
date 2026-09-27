@@ -18,18 +18,19 @@ export default function EntitiesPage({ caseId }) {
   const [typeFilter, setTypeFilter] = useState('ALL');
   const [sortBy, setSortBy] = useState('influenceScore');
 
+  const activeCaseId = caseId || 'demo-case-001';
+
   useEffect(() => {
-    if (!caseId) return;
     setLoading(true);
     const params = {};
     if (typeFilter !== 'ALL') params.type = typeFilter;
     if (search) params.search = search;
 
-    getEntities(caseId, params)
-      .then(res => setEntities(res.data))
+    getEntities(activeCaseId, params)
+      .then(res => setEntities(res.data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [caseId, typeFilter, search]);
+  }, [activeCaseId, typeFilter, search]);
 
   const sortedEntities = [...entities].sort((a, b) => {
     if (sortBy === 'influenceScore') return (b.influenceScore || 0) - (a.influenceScore || 0);
@@ -38,15 +39,7 @@ export default function EntitiesPage({ caseId }) {
     return 0;
   });
 
-  if (!caseId) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon">👤</div>
-        <h3 className="title-md">No Case Selected</h3>
-        <p className="body-sm">Select a case to view extracted entities.</p>
-      </div>
-    );
-  }
+
 
   return (
     <div className="animate-fade-in">

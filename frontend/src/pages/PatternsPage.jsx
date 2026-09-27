@@ -20,14 +20,15 @@ export default function PatternsPage({ caseId }) {
   const [severityFilter, setSeverityFilter] = useState('ALL');
   const [typeFilter, setTypeFilter] = useState('ALL');
 
+  const activeCaseId = caseId || 'demo-case-001';
+
   useEffect(() => {
-    if (!caseId) return;
     setLoading(true);
-    getPatterns(caseId)
-      .then(res => setPatterns(res.data))
+    getPatterns(activeCaseId)
+      .then(res => setPatterns(res.data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [caseId]);
+  }, [activeCaseId]);
 
   const filteredPatterns = patterns
     .filter(p => severityFilter === 'ALL' || p.severity === severityFilter)
@@ -44,16 +45,6 @@ export default function PatternsPage({ caseId }) {
     medium: patterns.filter(p => p.severity === 'medium').length,
     low: patterns.filter(p => p.severity === 'low').length,
   };
-
-  if (!caseId) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon">🔍</div>
-        <h3 className="title-md">No Case Selected</h3>
-        <p className="body-sm">Select a case to view detected patterns.</p>
-      </div>
-    );
-  }
 
   return (
     <div className="animate-fade-in">

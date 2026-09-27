@@ -29,12 +29,14 @@ export default function NetworkPage({ caseId }) {
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
 
+  const activeCaseId = caseId || 'demo-case-001';
+
   useEffect(() => {
-    if (!caseId) return;
     setLoading(true);
-    getNetwork(caseId)
+    getNetwork(activeCaseId)
       .then(res => {
-        const { nodes, edges } = res.data;
+        const nodes = res.data?.nodes || [];
+        const edges = res.data?.edges || res.data?.links || [];
         setGraphData({
           nodes: nodes.map(n => ({
             ...n,
@@ -49,7 +51,7 @@ export default function NetworkPage({ caseId }) {
       })
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [caseId]);
+  }, [activeCaseId]);
 
   useEffect(() => {
     const updateDimensions = () => {

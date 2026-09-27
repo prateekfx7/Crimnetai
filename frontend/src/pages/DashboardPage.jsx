@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getStats, getInfluencers, getPatterns } from '../api';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Users, GitBranch, AlertTriangle, Database, Crown, TrendingUp, Shield } from 'lucide-react';
+import { MOCK_STATS, MOCK_INFLUENCERS, MOCK_PATTERNS } from '../mockData';
 
 const ENTITY_COLORS = {
   PERSON: '#1d4ed8',
@@ -15,46 +16,33 @@ const ENTITY_COLORS = {
 const PIE_COLORS = ['#ff4d8b', '#1a3a3a', '#b8a4ed', '#ffb084', '#e8b94a', '#a4d4c5'];
 
 export default function DashboardPage({ caseId }) {
-  const [stats, setStats] = useState(null);
-  const [influencers, setInfluencers] = useState([]);
-  const [patterns, setPatterns] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState(MOCK_STATS);
+  const [influencers, setInfluencers] = useState(MOCK_INFLUENCERS);
+  const [patterns, setPatterns] = useState(MOCK_PATTERNS);
+
+  const activeCaseId = caseId || 'demo-case-001';
 
   useEffect(() => {
-    if (!caseId) return;
-    setLoading(true);
+    let isMounted = true;
     Promise.all([
-      getStats(caseId),
-      getInfluencers(caseId),
-      getPatterns(caseId),
+      getStats(activeCaseId),
+      getInfluencers(activeCaseId),
+      getPatterns(activeCaseId),
     ])
       .then(([statsRes, infRes, patRes]) => {
-        setStats(statsRes.data);
-        setInfluencers(infRes.data.slice(0, 10));
-        setPatterns(patRes.data.slice(0, 5));
+        if (!isMounted) return;
+        if (statsRes?.data) setStats(statsRes.data);
+        if (infRes?.data?.length) setInfluencers(infRes.data.slice(0, 10));
+        if (patRes?.data?.length) setPatterns(patRes.data.slice(0, 5));
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, [caseId]);
+      .catch((err) => {
+        console.warn('Dashboard using fallback data:', err.message);
+      });
 
-  if (!caseId) {
-    return (
-      <div className="empty-state">
-        <div className="empty-icon">📂</div>
-        <h3 className="title-md" style={{ marginBottom: 8 }}>No Case Selected</h3>
-        <p className="body-sm">Select a case from the sidebar or upload data to get started.</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return (
-      <div className="loading-state">
-        <div className="spinner" />
-        <p>Loading dashboard...</p>
-      </div>
-    );
-  }
+    return () => {
+      isMounted = false;
+    };
+  }, [activeCaseId]);
 
   const entityTypeData = stats?.entityTypes
     ? Object.entries(stats.entityTypes).map(([name, value]) => ({ name: name.replace('_', ' '), value }))

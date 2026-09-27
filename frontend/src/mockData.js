@@ -12,14 +12,25 @@ export const MOCK_STATS = {
   relationshipCount: 433,
   patternCount: 12,
   highRiskCount: 6,
-  byType: {
+  dataSourceCount: 6,
+  entityTypes: {
     PERSON: 14,
     PHONE_NUMBER: 16,
     LOCATION: 18,
     ORGANIZATION: 4,
     VEHICLE_NO: 4,
-    BANK_ACCOUNT: 4
-  }
+    BANK_ACCOUNT: 4,
+  },
+  patternSeverities: {
+    HIGH: 5,
+    MEDIUM: 4,
+    LOW: 3,
+  },
+  topInfluencer: {
+    name: 'Deepak Malhotra',
+    score: 0.94,
+    type: 'PERSON',
+  },
 };
 
 export const MOCK_INFLUENCERS = [
@@ -134,23 +145,43 @@ export const MOCK_NETWORK = {
     { id: 'acc-1', name: 'A/C 10234567890', type: 'BANK_ACCOUNT', val: 12, influence: 0.48, color: '#14b8a6' }
   ],
   links: [
-    { source: 'node-1', target: 'node-2', type: 'DIRECTS', weight: 5 },
-    { source: 'node-1', target: 'node-3', type: 'CONTROLS_FINANCES', weight: 5 },
-    { source: 'node-1', target: 'node-5', type: 'COMMUNICATED_WITH', weight: 4 },
-    { source: 'node-2', target: 'node-4', type: 'COORDINATES_WITH', weight: 5 },
-    { source: 'node-2', target: 'node-7', type: 'DISPATCHES', weight: 4 },
-    { source: 'node-2', target: 'phone-2', type: 'OWNS_DEVICE', weight: 3 },
-    { source: 'node-4', target: 'phone-1', type: 'OWNS_DEVICE', weight: 3 },
-    { source: 'phone-1', target: 'phone-2', type: 'CALL_VOLUME_HIGH', weight: 5 },
-    { source: 'phone-burner', target: 'node-1', type: 'BURNER_CONTACT', weight: 4 },
-    { source: 'phone-burner', target: 'node-3', type: 'BURNER_CONTACT', weight: 4 },
-    { source: 'node-3', target: 'org-1', type: 'BENEFICIAL_OWNER', weight: 4 },
-    { source: 'org-1', target: 'acc-1', type: 'ACCOUNT_HOLDER', weight: 4 },
-    { source: 'node-4', target: 'veh-1', type: 'OPERATES_VEHICLE', weight: 3 },
-    { source: 'veh-1', target: 'loc-1', type: 'TRACKED_AT', weight: 3 },
-    { source: 'node-1', target: 'loc-2', type: 'MEETS_AT', weight: 4 },
-    { source: 'node-5', target: 'node-6', type: 'RECEIVES_WEAPONS', weight: 4 },
-    { source: 'node-6', target: 'node-8', type: 'SUPPLIES', weight: 3 },
-    { source: 'node-7', target: 'node-8', type: 'OPERATES_WITH', weight: 3 }
+    { id: 'e1', source: 'node-1', target: 'node-2', type: 'DIRECTS', weight: 5 },
+    { id: 'e2', source: 'node-1', target: 'node-3', type: 'CONTROLS_FINANCES', weight: 5 },
+    { id: 'e3', source: 'node-1', target: 'node-5', type: 'COMMUNICATED_WITH', weight: 4 },
+    { id: 'e4', source: 'node-2', target: 'node-4', type: 'COORDINATES_WITH', weight: 5 },
+    { id: 'e5', source: 'node-2', target: 'node-7', type: 'DISPATCHES', weight: 4 },
+    { id: 'e6', source: 'node-2', target: 'phone-2', type: 'OWNS_DEVICE', weight: 3 },
+    { id: 'e7', source: 'node-4', target: 'phone-1', type: 'OWNS_DEVICE', weight: 3 },
+    { id: 'e8', source: 'phone-1', target: 'phone-2', type: 'CALL_VOLUME_HIGH', weight: 5 },
+    { id: 'e9', source: 'phone-burner', target: 'node-1', type: 'BURNER_CONTACT', weight: 4 },
+    { id: 'e10', source: 'phone-burner', target: 'node-3', type: 'BURNER_CONTACT', weight: 4 },
+    { id: 'e11', source: 'node-3', target: 'org-1', type: 'BENEFICIAL_OWNER', weight: 4 },
+    { id: 'e12', source: 'org-1', target: 'acc-1', type: 'ACCOUNT_HOLDER', weight: 4 },
+    { id: 'e13', source: 'node-4', target: 'veh-1', type: 'OPERATES_VEHICLE', weight: 3 },
+    { id: 'e14', source: 'veh-1', target: 'loc-1', type: 'TRACKED_AT', weight: 3 },
+    { id: 'e15', source: 'node-1', target: 'loc-2', type: 'MEETS_AT', weight: 4 },
+    { id: 'e16', source: 'node-5', target: 'node-6', type: 'RECEIVES_WEAPONS', weight: 4 },
+    { id: 'e17', source: 'node-6', target: 'node-8', type: 'SUPPLIES', weight: 3 },
+    { id: 'e18', source: 'node-7', target: 'node-8', type: 'OPERATES_WITH', weight: 3 }
+  ],
+  edges: [
+    { id: 'e1', source: 'node-1', target: 'node-2', type: 'DIRECTS', weight: 5 },
+    { id: 'e2', source: 'node-1', target: 'node-3', type: 'CONTROLS_FINANCES', weight: 5 },
+    { id: 'e3', source: 'node-1', target: 'node-5', type: 'COMMUNICATED_WITH', weight: 4 },
+    { id: 'e4', source: 'node-2', target: 'node-4', type: 'COORDINATES_WITH', weight: 5 },
+    { id: 'e5', source: 'node-2', target: 'node-7', type: 'DISPATCHES', weight: 4 },
+    { id: 'e6', source: 'node-2', target: 'phone-2', type: 'OWNS_DEVICE', weight: 3 },
+    { id: 'e7', source: 'node-4', target: 'phone-1', type: 'OWNS_DEVICE', weight: 3 },
+    { id: 'e8', source: 'phone-1', target: 'phone-2', type: 'CALL_VOLUME_HIGH', weight: 5 },
+    { id: 'e9', source: 'phone-burner', target: 'node-1', type: 'BURNER_CONTACT', weight: 4 },
+    { id: 'e10', source: 'phone-burner', target: 'node-3', type: 'BURNER_CONTACT', weight: 4 },
+    { id: 'e11', source: 'node-3', target: 'org-1', type: 'BENEFICIAL_OWNER', weight: 4 },
+    { id: 'e12', source: 'org-1', target: 'acc-1', type: 'ACCOUNT_HOLDER', weight: 4 },
+    { id: 'e13', source: 'node-4', target: 'veh-1', type: 'OPERATES_VEHICLE', weight: 3 },
+    { id: 'e14', source: 'veh-1', target: 'loc-1', type: 'TRACKED_AT', weight: 3 },
+    { id: 'e15', source: 'node-1', target: 'loc-2', type: 'MEETS_AT', weight: 4 },
+    { id: 'e16', source: 'node-5', target: 'node-6', type: 'RECEIVES_WEAPONS', weight: 4 },
+    { id: 'e17', source: 'node-6', target: 'node-8', type: 'SUPPLIES', weight: 3 },
+    { id: 'e18', source: 'node-7', target: 'node-8', type: 'OPERATES_WITH', weight: 3 }
   ]
 };
