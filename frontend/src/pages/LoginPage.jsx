@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { login as apiLogin } from '../api';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff, Sparkles, UserCheck, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -9,13 +9,12 @@ export default function LoginPage({ onLogin }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const performLogin = async (user, pass) => {
     setError('');
     setLoading(true);
 
     try {
-      const res = await apiLogin(username, password);
+      const res = await apiLogin(user, pass);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       onLogin(res.data.user);
@@ -24,6 +23,21 @@ export default function LoginPage({ onLogin }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    performLogin(username, password);
+  };
+
+  const handleQuickDemo = (role) => {
+    const creds = role === 'admin'
+      ? { u: 'admin', p: 'admin123' }
+      : { u: 'investigator', p: 'invest123' };
+
+    setUsername(creds.u);
+    setPassword(creds.p);
+    performLogin(creds.u, creds.p);
   };
 
   return (
@@ -38,6 +52,123 @@ export default function LoginPage({ onLogin }) {
         </div>
 
         <div className="login-card">
+          {/* Quick Demo Access Section */}
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px', fontSize: '13px', fontWeight: 600, color: 'var(--primary)' }}>
+              <Sparkles size={16} />
+              <span>1-Click Demo Access</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('investigator')}
+                disabled={loading}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  padding: '12px',
+                  background: 'var(--card-bg, #ffffff)',
+                  border: '1.5px solid var(--border)',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '13px', color: 'var(--text)' }}>
+                  <UserCheck size={16} color="var(--primary)" />
+                  <span>Investigator</span>
+                </div>
+                <span style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>
+                  Inspector Patel • MUM-CIB
+                </span>
+                <span style={{
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  marginTop: '6px',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  color: '#2563eb'
+                }}>
+                  Click to Sign In
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleQuickDemo('admin')}
+                disabled={loading}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  padding: '12px',
+                  background: 'var(--card-bg, #ffffff)',
+                  border: '1.5px solid var(--border)',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  textAlign: 'left',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--primary)';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, fontSize: '13px', color: 'var(--text)' }}>
+                  <ShieldAlert size={16} color="#d97706" />
+                  <span>Administrator</span>
+                </div>
+                <span style={{ fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>
+                  Commissioner Sharma • NCRB
+                </span>
+                <span style={{
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  marginTop: '6px',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  background: 'rgba(217, 119, 6, 0.1)',
+                  color: '#d97706'
+                }}>
+                  Click to Sign In
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'center',
+            margin: '18px 0',
+            color: 'var(--muted-soft)',
+            fontSize: '11px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+          }}>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+            <span style={{ padding: '0 10px' }}>or sign in with credentials</span>
+            <div style={{ flex: 1, height: '1px', background: 'var(--border)' }}></div>
+          </div>
+
           <form className="login-form" onSubmit={handleSubmit}>
             {error && <div className="login-error">{error}</div>}
 
@@ -81,15 +212,29 @@ export default function LoginPage({ onLogin }) {
               </div>
             </div>
 
-            <button className="btn btn-primary" type="submit" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
+            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%', marginTop: '4px' }}>
+              {loading ? 'Authenticating...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="login-demo">
-            <strong>Demo Credentials:</strong><br />
-            Admin: <code>admin</code> / <code>admin123</code><br />
-            Investigator: <code>investigator</code> / <code>invest123</code>
+          <div className="login-demo" style={{ marginTop: '16px' }}>
+            <span style={{ fontWeight: 600, display: 'block', marginBottom: '4px' }}>Demo Credentials:</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', fontSize: '12px' }}>
+              <span
+                onClick={() => { setUsername('investigator'); setPassword('invest123'); }}
+                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                title="Click to fill form"
+              >
+                Investigator: <code>investigator</code> / <code>invest123</code>
+              </span>
+              <span
+                onClick={() => { setUsername('admin'); setPassword('admin123'); }}
+                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                title="Click to fill form"
+              >
+                Admin: <code>admin</code> / <code>admin123</code>
+              </span>
+            </div>
           </div>
         </div>
       </div>
