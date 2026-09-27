@@ -1,0 +1,13 @@
+{
+  "name": "crimnet-analyzer",
+  "version": "1.0.0",
+  "description": "AI-Powered Criminal Network Analysis System",
+  "private": true,
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "seed": "cd backend && npm run seed",
+    "start": "cd backend && npm start"
+  }
+}
